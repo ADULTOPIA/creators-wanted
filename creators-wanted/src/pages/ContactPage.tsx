@@ -1,7 +1,6 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { Helmet } from 'react-helmet';
-import { useTranslation } from 'react-i18next';
 
 const PageContainer = styled.div`
   padding: 8rem 2rem 4rem;
@@ -96,7 +95,6 @@ const StatusMessage = styled.div<{ isError?: boolean }>`
 `;
 
 const ContactPage: React.FC = () => {
-  const { t } = useTranslation();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -156,7 +154,7 @@ const ContactPage: React.FC = () => {
       setStatus({
         submitted: true,
         submitting: false,
-        info: { error: false, msg: t('contactPage.form.success') }
+        info: { error: false, msg: '送信が完了しました。ありがとうございました。' }
       });
       
       // フォームのリセット
@@ -170,7 +168,7 @@ const ContactPage: React.FC = () => {
       setStatus({
         submitted: false,
         submitting: false,
-        info: { error: true, msg: t('contactPage.form.error') }
+        info: { error: true, msg: '送信中にエラーが発生しました。時間をおいて再度お試しください。' }
       });
     }
   };
@@ -178,17 +176,17 @@ const ContactPage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>{t('contactPage.title')}</title>
-        <meta name="description" content={t('contactPage.meta.description')} />
+        <title>お問い合わせ｜Creators Wanted</title>
+        <meta name="description" content="Creators Wantedへのお問い合わせページです。" />
       </Helmet>
       
-      <PageTitle>{t('contactPage.pageTitle')}</PageTitle>
+      <PageTitle>お問い合わせ</PageTitle>
       <Content>
-        <p>{t('contactPage.content')}</p>
+        <p>ご質問・ご要望などございましたら、下記フォームよりご連絡ください。</p>
         
         <Form onSubmit={handleSubmit}>
           <FormGroup>
-            <Label htmlFor="name">{t('contactPage.form.name')}</Label>
+            <Label htmlFor="name">お名前</Label>
             <Input 
               type="text" 
               id="name" 
@@ -200,7 +198,7 @@ const ContactPage: React.FC = () => {
           </FormGroup>
           
           <FormGroup>
-            <Label htmlFor="email">{t('contactPage.form.email')}</Label>
+            <Label htmlFor="email">メールアドレス</Label>
             <Input 
               type="email" 
               id="email" 
@@ -212,7 +210,7 @@ const ContactPage: React.FC = () => {
           </FormGroup>
           
           <FormGroup>
-            <Label htmlFor="message">{t('contactPage.form.message')}</Label>
+            <Label htmlFor="message">お問い合わせ内容</Label>
             <TextArea 
               id="message" 
               name="message" 
@@ -223,7 +221,7 @@ const ContactPage: React.FC = () => {
           </FormGroup>
           
           <SubmitButton type="submit" disabled={status.submitting}>
-            {status.submitting ? t('contactPage.form.submitting') : t('contactPage.form.submit')}
+            {status.submitting ? '送信中...' : '送信'}
           </SubmitButton>
           
           {status.info.msg && (

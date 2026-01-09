@@ -4,8 +4,6 @@ import { ThemeProvider } from 'styled-components';
 import styled from 'styled-components';
 import { Helmet } from 'react-helmet';
 
-// Import i18n (needs to be bundled)
-import './i18n/i18n';
 
 import { theme } from './styles/theme';
 import { GlobalStyle } from './styles/GlobalStyle';
