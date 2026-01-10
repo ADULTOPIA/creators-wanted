@@ -102,7 +102,7 @@ const HomePage: React.FC = () => {
       </HeroWrap>
       <DescriptionBox>
         <DescriptionTitle>
-          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logo_heart.png'} imgAlt="ロゴ">
+          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
             活動資訊
           </DescriptionTitleWithImage>
         </DescriptionTitle>
@@ -116,7 +116,7 @@ const HomePage: React.FC = () => {
           活動地址：桃園市中壢區領航北路一段99號
         </DescriptionText>
         <DescriptionTitle>
-          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logo_heart.png'} imgAlt="ロゴ">
+          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
             攤位報名資訊
           </DescriptionTitleWithImage>
         </DescriptionTitle>
@@ -129,7 +129,7 @@ const HomePage: React.FC = () => {
           招募類型：Cosplay、寫真、KOL、動漫周邊、同人誌
         </DescriptionText>
         <DescriptionTitle>
-          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logo_heart.png'} imgAlt="ロゴ">
+          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
             攤位資訊
           </DescriptionTitleWithImage>
         </DescriptionTitle>
@@ -165,7 +165,7 @@ const HomePage: React.FC = () => {
       </SectionImages>
       <DescriptionBox>
         <DescriptionTitle>
-          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logo_heart.png'} imgAlt="ロゴ">
+          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
             報名流程
           </DescriptionTitleWithImage>
         </DescriptionTitle>
@@ -179,7 +179,7 @@ const HomePage: React.FC = () => {
       </SectionImages>
       <DescriptionBox>
         <DescriptionTitle>
-          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logo_heart.png'} imgAlt="ロゴ">
+          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
             報名簡章
           </DescriptionTitleWithImage>
         </DescriptionTitle>
@@ -191,7 +191,7 @@ const HomePage: React.FC = () => {
       </DescriptionBox>
       <DescriptionBox>
         <DescriptionTitle>
-          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logo_heart.png'} imgAlt="ロゴ">
+          <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
             攤位報名資料填寫
           </DescriptionTitleWithImage>
         </DescriptionTitle>

@@ -121,7 +121,7 @@ const Footer = () => {
         {/* 左側：ロゴエリア */}
         <LogoSection>
           {/* ロゴ画像は一つのみ */}
-          <BrandLogo src={process.env.PUBLIC_URL + "/adultopia/logo_yoko.png"} alt="ADULTOPIA" />
+          <BrandLogo src={process.env.PUBLIC_URL + "/adultopia/logoYoko.png"} alt="ADULTOPIA" />
         </LogoSection>
 
         {/* 右側：情報エリア */}
