@@ -100,14 +100,6 @@ const HomePage: React.FC = () => {
           />
         </HeroCard>
       </HeroWrap>
-
-      {/* 説明画像1 */}
-      <SectionImages>
-        <SetumeiImg
-          src={`${process.env.PUBLIC_URL}/adultopia/setumei1.jpg`}
-          alt="説明画像1"
-        />
-      </SectionImages>
       <DescriptionBox>
         <DescriptionTitle>
           <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logo_heart.png'} imgAlt="ロゴ">
@@ -181,7 +173,7 @@ const HomePage: React.FC = () => {
       {/* プロセス画像 */}
       <SectionImages>
         <SetumeiImg
-          src={`${process.env.PUBLIC_URL}/adultopia/process.jpg`}
+          src={`${process.env.PUBLIC_URL}/adultopia/process2.jpg`}
           alt="プロセス画像"
         />
       </SectionImages>
@@ -299,15 +291,15 @@ const SectionImages = styled.section`
   padding: 0;
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  margin-top: 32px;
+  margin-bottom: 16px;
   position: relative;
   text-align: center;
 `;
 
 const DescriptionBox = styled.div`
   max-width: 600px;
-  margin: 24px 0 0 32px;
-  padding: 32px 24px 32px 48px;
+  margin: 12px 0 0 16px;
+  padding: 16px 12px 16px 20px;
   text-align: left;
   @media (max-width: 768px) {
     padding-left: 0;
