@@ -294,6 +294,9 @@ const DescriptionBox = styled.div`
   margin: 24px 0 0 32px;
   padding: 32px 24px 32px 48px;
   text-align: left;
+@media (max-width: 768px) {
+    padding-left: 0;
+  }
 `;
 
 const DescriptionTitle = styled.h2`
