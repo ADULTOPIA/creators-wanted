@@ -62,6 +62,21 @@ const SetumeiImg = styled.img`
 `;
 
 const HomePage: React.FC = () => {
+  // HERO画像の切り替え
+  const [heroSrc, setHeroSrc] = React.useState(`${process.env.PUBLIC_URL}/adultopia/hero.jpg`);
+  React.useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    const updateSrc = () => {
+      setHeroSrc(mq.matches
+        ? `${process.env.PUBLIC_URL}/adultopia/hero1080.jpg`
+        : `${process.env.PUBLIC_URL}/adultopia/hero.jpg`
+      );
+    };
+    updateSrc();
+    mq.addEventListener('change', updateSrc);
+    return () => mq.removeEventListener('change', updateSrc);
+  }, []);
+
   return (
     <Page>
       <Helmet>
@@ -80,7 +95,7 @@ const HomePage: React.FC = () => {
       <HeroWrap>
         <HeroCard>
           <HeroImg
-            src={`${process.env.PUBLIC_URL}/adultopia/hero.jpg`}
+            src={heroSrc}
             alt="ADULTOPIA 大人國 2026 Creators Wanted"
           />
         </HeroCard>
@@ -294,7 +309,7 @@ const DescriptionBox = styled.div`
   margin: 24px 0 0 32px;
   padding: 32px 24px 32px 48px;
   text-align: left;
-@media (max-width: 768px) {
+  @media (max-width: 768px) {
     padding-left: 0;
   }
 `;
