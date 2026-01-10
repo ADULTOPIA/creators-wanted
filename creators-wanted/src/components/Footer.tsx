@@ -83,6 +83,10 @@ const InfoBlock = styled.div`
   align-items: flex-start;
   padding-left: 84px;
 
+  @media (max-width: 768px) {
+    padding-left: 0;
+  }
+
 `;
 
 const Title = styled.h3`
@@ -123,7 +127,7 @@ const Footer = () => {
         {/* 右側：情報エリア */}
         <InfoSection>
           <InfoBlock>
-            <Title>大人國｜創作者聯繫 e-mail</Title>
+            <Title>大人國｜創作者聯繫</Title>
             <TextGroup>
               <p>創作者聯繫窗口：范范</p>
               <p>Line ID：xd6563</p>
