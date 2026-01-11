@@ -160,14 +160,60 @@ const HomePage: React.FC = () => {
       info: { error: false, msg: null }
     });
 
+    // GASへ宣傳素材アップロード
+    async function uploadToGAS(
+      creatorName: string,
+      promo1File: File,
+      promo2File: File
+    ) {
+      const readFileAsBase64 = (file: File) =>
+        new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const result = reader.result;
+            if (typeof result === 'string') resolve(result.split(',')[1] || '');
+            else resolve('');
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+      const payload = {
+        creatorName,
+        promo1: {
+          originalName: promo1File.name,
+          mimeType: promo1File.type,
+          base64: await readFileAsBase64(promo1File),
+        },
+        promo2: {
+          originalName: promo2File.name,
+          mimeType: promo2File.type,
+          base64: await readFileAsBase64(promo2File),
+        },
+      };
+
+      // CORSでレスポンス読めないので no-cors（投げ捨て）
+      await fetch('https://script.google.com/macros/s/AKfycbw5C79W1npp52_FE7S4gh18rqRnNlHkS17KXKSzLNfQCvL2GHF6BNACs--MlCCIDpgnAA/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // preflight回避寄り
+        body: JSON.stringify(payload),
+      });
+
+      return "sent";
+    }
+
     try {
+      // 宣傳素材1・2をGASへアップロード
+      const creatorName = formData.creatorName1;
+      if (!creatorName || !formData.promo1 || !formData.promo2) throw new Error('宣傳素材と創作者姓名は必須です');
+      await uploadToGAS(creatorName, formData.promo1, formData.promo2);
+
       // Google Formsの送信URL
       const googleFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSf_NWlZr8vrppypusKQvZbg5NSsZRqCwsHyETgxjWvqfhXNDA/formResponse';
 
       // フォームデータの作成
       const formEntryData = new FormData();
-
-      // --- GoogleフォームのエントリIDをここに記載（本番） ---
       formEntryData.append('entry.223524045', formData.realName); // 真實姓名
       formEntryData.append('entry.1232177201', formData.email); // Email
       formEntryData.append('entry.472609669', formData.phone); // 聯絡電話
@@ -183,8 +229,9 @@ const HomePage: React.FC = () => {
       formEntryData.append('entry.251903871', formData.boothSubtitle); // 攤位副標
       formEntryData.append('entry.975159553', formData.lanternName); // 燈籠名稱
       formEntryData.append('entry.854719392', formData.lanternSubtitle); // 燈籠副標
-      formEntryData.append('entry.722087227', 'ダミー'); // 宣傳素材1（ダミー文字列）
-      formEntryData.append('entry.842328103', 'ダミー'); // 宣傳素材2（ダミー文字列）
+      // 宣傳素材はGASでアップロード済みなので「アップロード済み」などの文字列を入れる
+      formEntryData.append('entry.722087227', 'アップロード済み'); // 宣傳素材1
+      formEntryData.append('entry.842328103', 'アップロード済み'); // 宣傳素材2
       formEntryData.append('entry.1340388620', formData.hardware); // 額外硬體需求
       formEntryData.append('entry.1539071706', formData.remarks); // 備註
 
@@ -346,7 +393,7 @@ const HomePage: React.FC = () => {
             報名簡章
           </DescriptionTitleWithImage>
         </DescriptionTitle>
-            <DescriptionText>
+            <DescriptionText as="div">
               <LinkBlock>
                 <UnderlinedLink href="https://drive.google.com/file/d/1cmho-0zuCSzWY2ZwOwfWZug2oVlnkmFv/view?usp=drive_link" target="_blank" rel="noopener noreferrer">中文報名簡章</UnderlinedLink>
               </LinkBlock>
