@@ -77,26 +77,158 @@ const HomePage: React.FC = () => {
     return () => mq.removeEventListener('change', updateSrc);
   }, []);
 
-  // 攤位類型の状態
-  const [boothType, setBoothType] = React.useState('standard');
 
-  // 創作者姓名の状態（最大2名）
-  const [creatorNames, setCreatorNames] = React.useState(['', '']);
+  // フォーム全体の状態
+    // 必須項目のバリデーション
+    const isFormValid = () => {
+      // 必須項目
+      const requiredFields = [
+        formData.realName,
+        formData.email,
+        formData.phone,
+        formData.idNumber,
+        formData.creatorName1,
+        formData.boothName,
+        formData.lanternName,
+        formData.promo1,
+        formData.promo2,
+        formData.boothType,
+      ];
+      // boothTypeがdoubleならcreatorName2も必須
+      if (formData.boothType === 'double' && !formData.creatorName2) return false;
+      // lanternNameは最大6文字
+      if (formData.lanternName && formData.lanternName.length > 6) return false;
+      // すべての必須項目が入力されているか
+      return requiredFields.every(f => f && (typeof f === 'string' ? f.trim() !== '' : true));
+    };
+  const [formData, setFormData] = React.useState({
+    realName: '',
+    email: '',
+    phone: '',
+    idNumber: '',
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    otherSocial: '',
+    boothType: 'standard',
+    creatorName1: '',
+    creatorName2: '',
+    boothName: '',
+    boothSubtitle: '',
+    lanternName: '',
+    lanternSubtitle: '',
+    promo1: null as File | null,
+    promo2: null as File | null,
+    hardware: '',
+    remarks: ''
+  });
 
   // boothType変更時のハンドラ
   const handleBoothTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBoothType(e.target.value);
-    // boothTypeがstandardなら1名、doubleなら2名分
-    setCreatorNames(e.target.value === 'double' ? ['', ''] : ['']);
+    const value = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      boothType: value,
+      // boothTypeがstandardなら2人目を空に
+      creatorName2: value === 'double' ? prev.creatorName2 : ''
+    }));
   };
 
-  // 創作者姓名入力のハンドラ
-  const handleCreatorNameChange = (idx: number, value: string) => {
-    setCreatorNames(prev => {
-      const updated = [...prev];
-      updated[idx] = value;
-      return updated;
+  // 各inputのonChange汎用ハンドラ
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type, files } = e.target as HTMLInputElement;
+    if (type === 'file') {
+      setFormData(prev => ({ ...prev, [name]: files && files[0] ? files[0] : null }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  // 送信状態
+  const [status, setStatus] = React.useState({
+    submitted: false,
+    submitting: false,
+    info: { error: false, msg: null as string | null }
+  });
+
+  // 送信ハンドラ
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus({
+      submitted: false,
+      submitting: true,
+      info: { error: false, msg: null }
     });
+
+    try {
+      // Google Formsの送信URL
+      const googleFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSf_NWlZr8vrppypusKQvZbg5NSsZRqCwsHyETgxjWvqfhXNDA/formResponse';
+
+      // フォームデータの作成
+      const formEntryData = new FormData();
+
+      // --- GoogleフォームのエントリIDをここに記載（本番） ---
+      formEntryData.append('entry.223524045', formData.realName); // 真實姓名
+      formEntryData.append('entry.1232177201', formData.email); // Email
+      formEntryData.append('entry.472609669', formData.phone); // 聯絡電話
+      formEntryData.append('entry.737699764', formData.idNumber); // 身分證字號 / 護照號碼
+      formEntryData.append('entry.1746982220', formData.facebook); // Facebook
+      formEntryData.append('entry.751341583', formData.instagram); // Instagram
+      formEntryData.append('entry.612151145', formData.twitter); // X（Twitter）
+      formEntryData.append('entry.992573759', formData.otherSocial); // 其他社群
+      formEntryData.append('entry.71172756', formData.boothType === 'double' ? '雙人攤位' : '標準攤位'); // 攤位類型（ラジオボタン）
+      formEntryData.append('entry.879795608', formData.creatorName1); // 創作者姓名1
+      if (formData.boothType === 'double') formEntryData.append('entry.42970170', formData.creatorName2); // 創作者姓名2
+      formEntryData.append('entry.342299385', formData.boothName); // 攤位名稱
+      formEntryData.append('entry.251903871', formData.boothSubtitle); // 攤位副標
+      formEntryData.append('entry.975159553', formData.lanternName); // 燈籠名稱
+      formEntryData.append('entry.854719392', formData.lanternSubtitle); // 燈籠副標
+      formEntryData.append('entry.722087227', 'ダミー'); // 宣傳素材1（ダミー文字列）
+      formEntryData.append('entry.842328103', 'ダミー'); // 宣傳素材2（ダミー文字列）
+      formEntryData.append('entry.1340388620', formData.hardware); // 額外硬體需求
+      formEntryData.append('entry.1539071706', formData.remarks); // 備註
+
+      // fetch APIで送信
+      await fetch(googleFormURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formEntryData
+      });
+
+      setStatus({
+        submitted: true,
+        submitting: false,
+        info: { error: false, msg: '送出完成，感謝您的報名！' }
+      });
+      // フォームリセット
+      setFormData({
+        realName: '',
+        email: '',
+        phone: '',
+        idNumber: '',
+        facebook: '',
+        instagram: '',
+        twitter: '',
+        otherSocial: '',
+        boothType: 'standard',
+        creatorName1: '',
+        creatorName2: '',
+        boothName: '',
+        boothSubtitle: '',
+        lanternName: '',
+        lanternSubtitle: '',
+        promo1: null,
+        promo2: null,
+        hardware: '',
+        remarks: ''
+      });
+    } catch (error) {
+      setStatus({
+        submitted: false,
+        submitting: false,
+        info: { error: true, msg: '送信中にエラーが発生しました。時間をおいて再度お試しください。' }
+      });
+    }
   };
 
   return (
@@ -236,39 +368,39 @@ const HomePage: React.FC = () => {
         {/* 報名フォーム（見た目のみ） */}
         <FormSection>
           <FormTitle>報名表單</FormTitle>
-          <StyledForm>
+          <StyledForm onSubmit={handleSubmit}>
             <SectionLabel>基本資料</SectionLabel>
             <FormGroup>
-              <Label htmlFor="realName">真實姓名</Label>
-              <Input type="text" id="realName" name="realName" placeholder="請輸入真實姓名" />
+              <Label htmlFor="realName">真實姓名 <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="realName" name="realName" placeholder="請輸入真實姓名" value={formData.realName} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="email">Email</Label>
-              <Input type="email" id="email" name="email" placeholder="請輸入Email" />
+              <Label htmlFor="email">Email <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="email" id="email" name="email" placeholder="請輸入Email" value={formData.email} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="phone">聯絡電話</Label>
-              <Input type="text" id="phone" name="phone" placeholder="請輸入聯絡電話" />
+              <Label htmlFor="phone">聯絡電話 <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="phone" name="phone" placeholder="請輸入聯絡電話" value={formData.phone} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="idNumber">身分證字號 / 護照號碼</Label>
-              <Input type="text" id="idNumber" name="idNumber" placeholder="請輸入身分證字號或護照號碼" />
+              <Label htmlFor="idNumber">身分證字號 / 護照號碼 <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="idNumber" name="idNumber" placeholder="請輸入身分證字號或護照號碼" value={formData.idNumber} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="facebook">社群連結：Facebook</Label>
-              <Input type="text" id="facebook" name="facebook" placeholder="Facebook連結" />
+              <Input type="text" id="facebook" name="facebook" placeholder="Facebook連結" value={formData.facebook} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="instagram">社群連結：Instagram</Label>
-              <Input type="text" id="instagram" name="instagram" placeholder="Instagram連結" />
+              <Input type="text" id="instagram" name="instagram" placeholder="Instagram連結" value={formData.instagram} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="twitter">社群連結：X（Twitter）</Label>
-              <Input type="text" id="twitter" name="twitter" placeholder="X（Twitter）連結" />
+              <Input type="text" id="twitter" name="twitter" placeholder="X（Twitter）連結" value={formData.twitter} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="otherSocial">社群連結：其他</Label>
-              <Input type="text" id="otherSocial" name="otherSocial" placeholder="其他社群連結" />
+              <Input type="text" id="otherSocial" name="otherSocial" placeholder="其他社群連結" value={formData.otherSocial} onChange={handleInputChange} />
             </FormGroup>
             <SectionLabel>報名資料</SectionLabel>
             {/* 攤位類型を先に移動 */}
@@ -276,60 +408,65 @@ const HomePage: React.FC = () => {
               <Label>攤位類型</Label>
               <RadioGroup>
                 <RadioLabel>
-                  <RadioInput type="radio" name="boothType" value="standard" checked={boothType === 'standard'} onChange={handleBoothTypeChange} /> 標準攤位
+                  <RadioInput type="radio" name="boothType" value="standard" checked={formData.boothType === 'standard'} onChange={handleBoothTypeChange} /> 標準攤位
                 </RadioLabel>
                 <RadioLabel>
-                  <RadioInput type="radio" name="boothType" value="double" checked={boothType === 'double'} onChange={handleBoothTypeChange} /> 雙人攤位
+                  <RadioInput type="radio" name="boothType" value="double" checked={formData.boothType === 'double'} onChange={handleBoothTypeChange} /> 雙人攤位
                 </RadioLabel>
               </RadioGroup>
             </FormGroup>
             {/* 創作者姓名フィールド */}
             <FormGroup>
-              <Label>創作者姓名{boothType === 'double' ? '1' : ''}</Label>
-              <Input type="text" name="creatorName1" placeholder="創作者姓名1" value={creatorNames[0] || ''} onChange={e => handleCreatorNameChange(0, e.target.value)} />
+              <Label>創作者姓名{formData.boothType === 'double' ? '1' : ''} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" name="creatorName1" placeholder="創作者姓名1" value={formData.creatorName1} onChange={handleInputChange} required />
             </FormGroup>
-            {boothType === 'double' && (
+            {formData.boothType === 'double' && (
               <FormGroup>
-                <Label>創作者姓名2</Label>
-                <Input type="text" name="creatorName2" placeholder="創作者姓名2" value={creatorNames[1] || ''} onChange={e => handleCreatorNameChange(1, e.target.value)} />
+                <Label>創作者姓名2 <span style={{color: '#cf0404'}}>*</span></Label>
+                <Input type="text" name="creatorName2" placeholder="創作者姓名2" value={formData.creatorName2} onChange={handleInputChange} required />
               </FormGroup>
             )}
             
             <FormGroup>
-              <Label htmlFor="boothName">攤位名稱</Label>
-              <Input type="text" id="boothName" name="boothName" placeholder="攤位名稱" />
+              <Label htmlFor="boothName">攤位名稱 <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="boothName" name="boothName" placeholder="攤位名稱" value={formData.boothName} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="boothSubtitle">攤位副標（可不填）</Label>
-              <Input type="text" id="boothSubtitle" name="boothSubtitle" placeholder="攤位副標" />
+              <Label htmlFor="boothSubtitle">攤位副標</Label>
+              <Input type="text" id="boothSubtitle" name="boothSubtitle" placeholder="攤位副標" value={formData.boothSubtitle} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="lanternName">燈籠名稱（限六個字）</Label>
-              <Input type="text" id="lanternName" name="lanternName" placeholder="燈籠名稱（限六個字）" maxLength={6} />
+              <Label htmlFor="lanternName">燈籠名稱（限六個字） <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="lanternName" name="lanternName" placeholder="燈籠名稱（限六個字）" maxLength={6} value={formData.lanternName} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="lanternSubtitle">燈籠副標（可不填）</Label>
-              <Input type="text" id="lanternSubtitle" name="lanternSubtitle" placeholder="燈籠副標" />
+              <Label htmlFor="lanternSubtitle">燈籠副標</Label>
+              <Input type="text" id="lanternSubtitle" name="lanternSubtitle" placeholder="燈籠副標" value={formData.lanternSubtitle} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="promo1">宣傳素材1（尺寸規格：至少為1080 x 1920）</Label>
-              <Input type="file" id="promo1" name="promo1" accept="image/*" />
+              <Label htmlFor="promo1">宣傳素材1（尺寸規格：至少為1080 x 1920） <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="file" id="promo1" name="promo1" accept="image/*" onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="promo2">宣傳素材2（尺寸規格：至少為1080 x 1920）</Label>
-              <Input type="file" id="promo2" name="promo2" accept="image/*" />
+              <Label htmlFor="promo2">宣傳素材2（尺寸規格：至少為1080 x 1920） <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="file" id="promo2" name="promo2" accept="image/*" onChange={handleInputChange} required />
             </FormGroup>
             {/* ...existing code... */}
             <FormGroup>
               <Label htmlFor="hardware">額外硬體需求（請填寫品項及數量）</Label>
-              <Input type="text" id="hardware" name="hardware" placeholder="例：插座2個、桌子1張" />
+              <Input type="text" id="hardware" name="hardware" placeholder="例：插座2個、桌子1張" value={formData.hardware} onChange={handleInputChange} />
             </FormGroup>
             {/* 備註欄 */}
             <FormGroup>
               <Label htmlFor="remarks">備註：<br/>（若有任何特別需求請告知我們，或寄信給官方信箱，我們會儘速回覆您）</Label>
-              <RemarksTextarea id="remarks" name="remarks" rows={3} placeholder="備註、特別需求" />
+              <RemarksTextarea id="remarks" name="remarks" rows={3} placeholder="備註、特別需求" value={formData.remarks} onChange={handleInputChange} />
             </FormGroup>
-            <SubmitButton type="button" disabled>確認報名</SubmitButton>
+            <SubmitButton type="submit" disabled={status.submitting || !isFormValid()}>{status.submitting ? '送信中...' : '確認報名'}</SubmitButton>
+            {status.info.msg && (
+              <div style={{ marginTop: '1rem', textAlign: 'center', color: status.info.error ? '#c00' : '#155724', background: status.info.error ? '#f8d7da' : '#d4edda', padding: '0.75rem', borderRadius: 4 }}>
+                {status.info.msg}
+              </div>
+            )}
           </StyledForm>
         </FormSection>
       </Page>
@@ -459,16 +596,17 @@ const RemarksTextarea = styled.textarea`
   resize: vertical;
 `;
 
-const SubmitButton = styled.button`
-  background-color: #222;
+const SubmitButton = styled.button<{disabled?: boolean}>`
+  background-color: ${({ disabled }) => disabled ? '#888' : '#cf0404'};
   color: white;
   border: none;
   border-radius: 4px;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  cursor: not-allowed;
-  opacity: 0.7;
+  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${({ disabled }) => disabled ? 0.7 : 1};
   align-self: center;
+  transition: background 0.2s, opacity 0.2s;
 `;
 
 export default HomePage;
