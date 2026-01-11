@@ -134,6 +134,15 @@ const HomePage: React.FC = () => {
           </DescriptionTitleWithImage>
         </DescriptionTitle>
       </DescriptionBox>
+
+      {/* 説明画像1 */}
+      <SectionImages>
+        <SetumeiImg
+          src={`${process.env.PUBLIC_URL}/adultopia/setumei1.jpg`}
+          alt="説明画像1"
+        />
+      </SectionImages>
+      
       {/* 説明画像2 */}
       <SectionImages>
         <SetumeiImg
