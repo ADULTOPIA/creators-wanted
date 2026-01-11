@@ -471,12 +471,12 @@ const HomePage: React.FC = () => {
             {/* 創作者姓名フィールド */}
             <FormGroup>
               <Label>創作者姓名{formData.boothType === 'double' ? '1' : ''} <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="text" name="creatorName1" placeholder="創作者姓名1" value={formData.creatorName1} onChange={handleInputChange} required />
+              <Input type="text" name="creatorName1" placeholder="創作者姓名" value={formData.creatorName1} onChange={handleInputChange} required />
             </FormGroup>
             {formData.boothType === 'double' && (
               <FormGroup>
                 <Label>創作者姓名2 <span style={{color: '#cf0404'}}>*</span></Label>
-                <Input type="text" name="creatorName2" placeholder="創作者姓名2" value={formData.creatorName2} onChange={handleInputChange} required />
+                <Input type="text" name="creatorName2" placeholder="創作者姓名" value={formData.creatorName2} onChange={handleInputChange} required />
               </FormGroup>
             )}
             
@@ -489,7 +489,7 @@ const HomePage: React.FC = () => {
               <Input type="text" id="boothSubtitle" name="boothSubtitle" placeholder="攤位副標" value={formData.boothSubtitle} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="lanternName">燈籠名稱（限六個字） <span style={{color: '#cf0404'}}>*</span></Label>
+              <Label htmlFor="lanternName">燈籠名稱（限六個字以内） <span style={{color: '#cf0404'}}>*</span></Label>
               <Input type="text" id="lanternName" name="lanternName" placeholder="燈籠名稱（限六個字）" maxLength={6} value={formData.lanternName} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
