@@ -77,6 +77,28 @@ const HomePage: React.FC = () => {
     return () => mq.removeEventListener('change', updateSrc);
   }, []);
 
+  // 攤位類型の状態
+  const [boothType, setBoothType] = React.useState('standard');
+
+  // 創作者姓名の状態（最大2名）
+  const [creatorNames, setCreatorNames] = React.useState(['', '']);
+
+  // boothType変更時のハンドラ
+  const handleBoothTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBoothType(e.target.value);
+    // boothTypeがstandardなら1名、doubleなら2名分
+    setCreatorNames(e.target.value === 'double' ? ['', ''] : ['']);
+  };
+
+  // 創作者姓名入力のハンドラ
+  const handleCreatorNameChange = (idx: number, value: string) => {
+    setCreatorNames(prev => {
+      const updated = [...prev];
+      updated[idx] = value;
+      return updated;
+    });
+  };
+
   return (
     <Page>
       <Helmet>
@@ -249,10 +271,29 @@ const HomePage: React.FC = () => {
               <Input type="text" id="otherSocial" name="otherSocial" placeholder="其他社群連結" />
             </FormGroup>
             <SectionLabel>報名資料</SectionLabel>
+            {/* 攤位類型を先に移動 */}
             <FormGroup>
-              <Label htmlFor="creatorNames">創作者姓名（若為雙人攤位請填寫兩位的姓名）</Label>
-              <Input type="text" id="creatorNames" name="creatorNames" placeholder="創作者姓名" />
+              <Label>攤位類型</Label>
+              <RadioGroup>
+                <RadioLabel>
+                  <RadioInput type="radio" name="boothType" value="standard" checked={boothType === 'standard'} onChange={handleBoothTypeChange} /> 標準攤位
+                </RadioLabel>
+                <RadioLabel>
+                  <RadioInput type="radio" name="boothType" value="double" checked={boothType === 'double'} onChange={handleBoothTypeChange} /> 雙人攤位
+                </RadioLabel>
+              </RadioGroup>
             </FormGroup>
+            {/* 創作者姓名フィールド */}
+            <FormGroup>
+              <Label>創作者姓名{boothType === 'double' ? '1' : ''}</Label>
+              <Input type="text" name="creatorName1" placeholder="創作者姓名1" value={creatorNames[0] || ''} onChange={e => handleCreatorNameChange(0, e.target.value)} />
+            </FormGroup>
+            {boothType === 'double' && (
+              <FormGroup>
+                <Label>創作者姓名2</Label>
+                <Input type="text" name="creatorName2" placeholder="創作者姓名2" value={creatorNames[1] || ''} onChange={e => handleCreatorNameChange(1, e.target.value)} />
+              </FormGroup>
+            )}
             
             <FormGroup>
               <Label htmlFor="boothName">攤位名稱</Label>
@@ -278,17 +319,7 @@ const HomePage: React.FC = () => {
               <Label htmlFor="promo2">宣傳素材2（尺寸規格：至少為1080 x 1920）</Label>
               <Input type="file" id="promo2" name="promo2" accept="image/*" />
             </FormGroup>
-            <FormGroup>
-              <Label>攤位類型</Label>
-              <RadioGroup>
-                <RadioLabel>
-                  <RadioInput type="radio" name="boothType" value="standard" defaultChecked /> 標準攤位
-                </RadioLabel>
-                <RadioLabel>
-                  <RadioInput type="radio" name="boothType" value="double" /> 雙人攤位
-                </RadioLabel>
-              </RadioGroup>
-            </FormGroup>
+            {/* ...existing code... */}
             <FormGroup>
               <Label htmlFor="hardware">額外硬體需求（請填寫品項及數量）</Label>
               <Input type="text" id="hardware" name="hardware" placeholder="例：插座2個、桌子1張" />
