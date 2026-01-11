@@ -192,11 +192,17 @@ const HomePage: React.FC = () => {
             報名簡章
           </DescriptionTitleWithImage>
         </DescriptionTitle>
-        <DescriptionText>
-          中文報名簡章<br/>
-          日文報名簡章<br/>
-          韓文報名簡章
-        </DescriptionText>
+            <DescriptionText>
+              <LinkBlock>
+                <UnderlinedLink href="https://drive.google.com/file/d/1cmho-0zuCSzWY2ZwOwfWZug2oVlnkmFv/view?usp=drive_link" target="_blank" rel="noopener noreferrer">中文報名簡章</UnderlinedLink>
+              </LinkBlock>
+              <LinkBlock>
+                <UnderlinedLink href="https://drive.google.com/file/d/11JKyad1tMkJS91U8jN6ylWTy5vC8y-wV/view?usp=drive_link" target="_blank" rel="noopener noreferrer">日文報名簡章</UnderlinedLink>
+              </LinkBlock>
+              <LinkBlock>
+                <UnderlinedLink href="https://drive.google.com/file/d/1zaYTqjBmS7A4a3SEUju2woYeKUlt1d9b/view?usp=sharing" target="_blank" rel="noopener noreferrer">韓文報名簡章</UnderlinedLink>
+              </LinkBlock>
+            </DescriptionText>
       </DescriptionBox>
       <DescriptionBox>
         <DescriptionTitle>
@@ -294,7 +300,18 @@ const HomePage: React.FC = () => {
   );
 };
 
-
+// 報名簡章用の下線付きリンク
+const UnderlinedLink = styled.a`
+  text-decoration: underline;
+  font-size: 1.4rem;
+  font-weight: 600;
+  &:hover {
+    color: #ea6d9a;
+  }
+`;
+const LinkBlock = styled.div`
+    margin-bottom: 10px;
+`;
 const SectionImages = styled.section`
   background: #fff;
   padding: 0;
