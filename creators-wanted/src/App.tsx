@@ -9,7 +9,6 @@ import { theme } from './styles/theme';
 import { GlobalStyle } from './styles/GlobalStyle';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
-import ContactPage from './pages/ContactPage';
 
 const Main = styled.main`
   background-color: ${({ theme }) => theme.colors.white};
@@ -29,7 +28,6 @@ function App() {
         <Main>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/contact" element={<ContactPage />} />
           </Routes>
         </Main>
         <Footer />

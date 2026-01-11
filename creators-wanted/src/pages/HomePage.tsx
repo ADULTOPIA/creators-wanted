@@ -287,13 +287,13 @@ const HomePage: React.FC = () => {
   return (
     <Page>
       <Helmet>
-        <title>Creators Wanted｜Adultopia 大人國</title>
+        <title>創作者募集｜2026 Adultopia 大人國</title>
         <meta
           name="description"
-          content="2026 Adultopia 大人國｜創作者募集（出展者報名）"
+          content="2026 Adultopia 大人國｜創作者募集"
         />
         <meta property="og:title" content="Creators Wanted｜Adultopia 大人國" />
-        <meta property="og:description" content="2026 Adultopia 大人國｜創作者募集（出展者報名）" />
+        <meta property="og:description" content="2026 Adultopia 大人國｜創作者募集" />
         <meta property="og:image" content="/adultopia/og.jpg" />
         <meta property="og:type" content="website" />
       </Helmet>
