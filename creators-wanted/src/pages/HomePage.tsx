@@ -293,6 +293,11 @@ const HomePage: React.FC = () => {
               <Label htmlFor="hardware">額外硬體需求（請填寫品項及數量）</Label>
               <Input type="text" id="hardware" name="hardware" placeholder="例：插座2個、桌子1張" />
             </FormGroup>
+            {/* 備註欄 */}
+            <FormGroup>
+              <Label htmlFor="remarks">備註：<br/>（若有任何特別需求請告知我們，或寄信給官方信箱，我們會儘速回覆您）</Label>
+              <RemarksTextarea id="remarks" name="remarks" rows={3} placeholder="備註、特別需求" />
+            </FormGroup>
             <SubmitButton type="button" disabled>確認報名</SubmitButton>
           </StyledForm>
         </FormSection>
@@ -412,6 +417,15 @@ const RadioLabel = styled.label`
 
 const RadioInput = styled.input`
   accent-color: #222;
+`;
+
+const RemarksTextarea = styled.textarea`
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  resize: vertical;
 `;
 
 const SubmitButton = styled.button`
