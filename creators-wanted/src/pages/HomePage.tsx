@@ -62,6 +62,9 @@ const SetumeiImg = styled.img`
 `;
 
 const HomePage: React.FC = () => {
+    // ファイルinputのref
+    const promo1Ref = React.useRef<HTMLInputElement | null>(null);
+    const promo2Ref = React.useRef<HTMLInputElement | null>(null);
   // HERO画像の切り替え
   const [heroSrc, setHeroSrc] = React.useState(`${process.env.PUBLIC_URL}/adultopia/hero.jpg`);
   React.useEffect(() => {
@@ -206,7 +209,7 @@ const HomePage: React.FC = () => {
     try {
       // 宣傳素材1・2をGASへアップロード
       const creatorName = formData.creatorName1;
-      if (!creatorName || !formData.promo1 || !formData.promo2) throw new Error('宣傳素材と創作者姓名は必須です');
+      if (!creatorName || !formData.promo1 || !formData.promo2) throw new Error('宣傳素材與創作者姓名為必填');
       await uploadToGAS(creatorName, formData.promo1, formData.promo2);
 
       // Google Formsの送信URL
@@ -229,9 +232,9 @@ const HomePage: React.FC = () => {
       formEntryData.append('entry.251903871', formData.boothSubtitle); // 攤位副標
       formEntryData.append('entry.975159553', formData.lanternName); // 燈籠名稱
       formEntryData.append('entry.854719392', formData.lanternSubtitle); // 燈籠副標
-      // 宣傳素材はGASでアップロード済みなので「アップロード済み」などの文字列を入れる
-      formEntryData.append('entry.722087227', 'アップロード済み'); // 宣傳素材1
-      formEntryData.append('entry.842328103', 'アップロード済み'); // 宣傳素材2
+      // 宣傳素材はGASでアップロード済みなので「創作者姓名_宣傳素材1」「創作者姓名_宣傳素材2」の形式で入れる
+      formEntryData.append('entry.722087227', formData.creatorName1 ? `${formData.creatorName1}_宣傳素材1` : ''); // 宣傳素材1
+      formEntryData.append('entry.842328103', formData.creatorName1 ? `${formData.creatorName1}_宣傳素材2` : ''); // 宣傳素材2
       formEntryData.append('entry.1340388620', formData.hardware); // 額外硬體需求
       formEntryData.append('entry.1539071706', formData.remarks); // 備註
 
@@ -269,11 +272,14 @@ const HomePage: React.FC = () => {
         hardware: '',
         remarks: ''
       });
+      // ファイルinputもリセット
+      if (promo1Ref.current) promo1Ref.current.value = '';
+      if (promo2Ref.current) promo2Ref.current.value = '';
     } catch (error) {
       setStatus({
         submitted: false,
         submitting: false,
-        info: { error: true, msg: '送信中にエラーが発生しました。時間をおいて再度お試しください。' }
+        info: { error: true, msg: '送出時發生錯誤，請稍後再試。' }
       });
     }
   };
@@ -492,11 +498,11 @@ const HomePage: React.FC = () => {
             </FormGroup>
             <FormGroup>
               <Label htmlFor="promo1">宣傳素材1（尺寸規格：至少為1080 x 1920） <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="file" id="promo1" name="promo1" accept="image/*" onChange={handleInputChange} required />
+              <Input type="file" id="promo1" name="promo1" accept="image/*" onChange={handleInputChange} required ref={promo1Ref} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="promo2">宣傳素材2（尺寸規格：至少為1080 x 1920） <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="file" id="promo2" name="promo2" accept="image/*" onChange={handleInputChange} required />
+              <Input type="file" id="promo2" name="promo2" accept="image/*" onChange={handleInputChange} required ref={promo2Ref} />
             </FormGroup>
             {/* ...existing code... */}
             <FormGroup>
