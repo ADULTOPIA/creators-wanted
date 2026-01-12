@@ -401,13 +401,13 @@ const HomePage: React.FC = () => {
         </DescriptionTitle>
             <DescriptionText as="div">
               <LinkBlock>
-                <UnderlinedLink href="https://drive.google.com/file/d/1cmho-0zuCSzWY2ZwOwfWZug2oVlnkmFv/view?usp=drive_link" target="_blank" rel="noopener noreferrer">中文報名簡章</UnderlinedLink>
+                 <UnderlinedLink href="https://drive.google.com/file/d/1WasayDe3m4j_40xTY15jcM-Bg2fFvCIy/view?usp=sharing" target="_blank" rel="noopener noreferrer">中文報名簡章</UnderlinedLink>
               </LinkBlock>
               <LinkBlock>
-                <UnderlinedLink href="https://drive.google.com/file/d/11JKyad1tMkJS91U8jN6ylWTy5vC8y-wV/view?usp=drive_link" target="_blank" rel="noopener noreferrer">日文報名簡章</UnderlinedLink>
+                 <UnderlinedLink href="https://drive.google.com/file/d/1gKienFXdzh1scliEx2OWsX18CvqBXAmw/view?usp=drive_link" target="_blank" rel="noopener noreferrer">日文報名簡章</UnderlinedLink>
               </LinkBlock>
               <LinkBlock>
-                <UnderlinedLink href="https://drive.google.com/file/d/1zaYTqjBmS7A4a3SEUju2woYeKUlt1d9b/view?usp=sharing" target="_blank" rel="noopener noreferrer">韓文報名簡章</UnderlinedLink>
+                 <UnderlinedLink href="https://drive.google.com/file/d/1zaYTqjBmS7A4a3SEUju2woYeKUlt1d9b/view?usp=drive_link" target="_blank" rel="noopener noreferrer">韓文報名簡章</UnderlinedLink>
               </LinkBlock>
             </DescriptionText>
       </DescriptionBox>
