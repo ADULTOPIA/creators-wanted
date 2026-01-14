@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import '../i18n';
 import styled from 'styled-components';
 import { Helmet } from 'react-helmet';
 
@@ -62,9 +64,10 @@ const SetumeiImg = styled.img`
 `;
 
 const HomePage: React.FC = () => {
-    // ファイルinputのref
-    const promo1Ref = React.useRef<HTMLInputElement | null>(null);
-    const promo2Ref = React.useRef<HTMLInputElement | null>(null);
+  const { t, i18n } = useTranslation();
+  // ファイルinputのref
+  const promo1Ref = React.useRef<HTMLInputElement | null>(null);
+  const promo2Ref = React.useRef<HTMLInputElement | null>(null);
   // HERO画像の切り替え
   const [heroSrc, setHeroSrc] = React.useState(`${process.env.PUBLIC_URL}/adultopia/hero.jpg`);
   React.useEffect(() => {
@@ -80,30 +83,16 @@ const HomePage: React.FC = () => {
     return () => mq.removeEventListener('change', updateSrc);
   }, []);
 
+  // 言語選択UI用のstate
+  const [langMenuOpen, setLangMenuOpen] = React.useState(false);
+  const LANGUAGES = [
+    { code: 'zh-TW', label: '繁體中文' },
+    { code: 'ja', label: '日本語' },
+    { code: 'ko', label: '한국어' },
+  ];
 
   // フォーム全体の状態
-    // 必須項目のバリデーション
-    const isFormValid = () => {
-      // 必須項目
-      const requiredFields = [
-        formData.realName,
-        formData.email,
-        formData.phone,
-        formData.idNumber,
-        formData.creatorName1,
-        formData.boothName,
-        formData.lanternName,
-        formData.promo1,
-        formData.promo2,
-        formData.boothType,
-      ];
-      // boothTypeがdoubleならcreatorName2も必須
-      if (formData.boothType === 'double' && !formData.creatorName2) return false;
-      // lanternNameは最大6文字
-      if (formData.lanternName && formData.lanternName.length > 6) return false;
-      // すべての必須項目が入力されているか
-      return requiredFields.every(f => f && (typeof f === 'string' ? f.trim() !== '' : true));
-    };
+  // 必須項目のバリデーション
   const [formData, setFormData] = React.useState({
     realName: '',
     email: '',
@@ -125,7 +114,27 @@ const HomePage: React.FC = () => {
     hardware: '',
     remarks: ''
   });
-
+  const isFormValid = () => {
+    // 必須項目
+    const requiredFields = [
+      formData.realName,
+      formData.email,
+      formData.phone,
+      formData.idNumber,
+      formData.creatorName1,
+      formData.boothName,
+      formData.lanternName,
+      formData.promo1,
+      formData.promo2,
+      formData.boothType,
+    ];
+    // boothTypeがdoubleならcreatorName2も必須
+    if (formData.boothType === 'double' && !formData.creatorName2) return false;
+    // lanternNameは最大6文字
+    if (formData.lanternName && formData.lanternName.length > 6) return false;
+    // すべての必須項目が入力されているか
+    return requiredFields.every(f => f && (typeof f === 'string' ? f.trim() !== '' : true));
+  };
   // boothType変更時のハンドラ
   const handleBoothTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -136,7 +145,6 @@ const HomePage: React.FC = () => {
       creatorName2: value === 'double' ? prev.creatorName2 : ''
     }));
   };
-
   // 各inputのonChange汎用ハンドラ
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type, files } = e.target as HTMLInputElement;
@@ -146,14 +154,12 @@ const HomePage: React.FC = () => {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
-
   // 送信状態
   const [status, setStatus] = React.useState({
     submitted: false,
     submitting: false,
     info: { error: false, msg: null as string | null }
   });
-
   // 送信ハンドラ
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -287,13 +293,13 @@ const HomePage: React.FC = () => {
   return (
     <Page>
       <Helmet>
-        <title>創作者募集｜2026 Adultopia 大人國</title>
+        <title>{t('pageTitle', '創作者募集｜2026 Adultopia 大人國')}</title>
         <meta
           name="description"
-          content="2026 Adultopia 大人國｜創作者募集"
+          content={t('metaDescription', '2026 Adultopia 大人國｜創作者募集')}
         />
-        <meta property="og:title" content="Creators Wanted｜Adultopia 大人國" />
-        <meta property="og:description" content="2026 Adultopia 大人國｜創作者募集" />
+        <meta property="og:title" content={t('ogTitle', 'Creators Wanted｜Adultopia 大人國')} />
+        <meta property="og:description" content={t('ogDescription', '2026 Adultopia 大人國｜創作者募集')} />
         <meta property="og:image" content="/adultopia/og.jpg" />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -303,41 +309,83 @@ const HomePage: React.FC = () => {
         <HeroCard>
           <HeroImg
             src={heroSrc}
-            alt="ADULTOPIA 大人國 2026 Creators Wanted"
+            alt={t('heroAlt', 'ADULTOPIA 大人國 2026 Creators Wanted')}
           />
+          {/* 言語切替ボタン（画面右上に固定） */}
+          <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}>
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              <button
+                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 4, border: '1px solid #ccc', background: '#fff', cursor: 'pointer', fontWeight: 600 }}
+                onClick={() => setLangMenuOpen(open => !open)}
+                aria-label="Change language"
+              >
+                {/* 地球アイコン */}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 0 20"/><path d="M12 2a15.3 15.3 0 0 0 0 20"/></svg>
+                <span>Language</span>
+              </button>
+              {langMenuOpen && (
+                <ul style={{
+                  position: 'absolute',
+                  top: '110%',
+                  right: 0,
+                  minWidth: 120,
+                  background: '#fff',
+                  border: '1px solid #ccc',
+                  borderRadius: 4,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                  padding: 0,
+                  margin: 0,
+                  zIndex: 1001,
+                }}>
+                  {LANGUAGES.map(lang => (
+                    <li key={lang.code} style={{ listStyle: 'none' }}>
+                      <button
+                        style={{
+                          width: '100%',
+                          padding: '8px 16px',
+                          background: i18n.language === lang.code ? '#eee' : '#fff',
+                          border: 'none',
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          i18n.changeLanguage(lang.code);
+                          setLangMenuOpen(false);
+                          const url = new URL(window.location.href);
+                          url.searchParams.set('lng', lang.code);
+                          window.history.replaceState(null, '', url.toString());
+                        }}
+                      >
+                        {lang.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
         </HeroCard>
       </HeroWrap>
       <DescriptionBox>
         <DescriptionTitle>
           <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
-            活動資訊
+            {t('activityInfoTitle', '活動資訊')}
           </DescriptionTitleWithImage>
         </DescriptionTitle>
         <DescriptionText>
-          活動名稱：2026 Adultopia 大人國<br/>
-          活動日期：2026/03/28-2026/03/29<br/>
-          　創作者入場時間：09:00-18:00<br/>
-          　快通票入場時間：09:30-18:00<br/>
-          　一般票入場時間：10:00-18:00<br/>
-          活動地點：桃園會展中心<br/>
-          活動地址：桃園市中壢區領航北路一段99號
+          {t('activityInfo', '活動名稱：2026 Adultopia 大人國\n活動日期：2026/03/28-2026/03/29\n　創作者入場時間：09:00-18:00\n　快通票入場時間：09:30-18:00\n　一般票入場時間：10:00-18:00\n活動地點：桃園會展中心\n活動地址：桃園市中壢區領航北路一段99號').split('\n').map((line: string, i: number) => (<React.Fragment key={i}>{line}<br/></React.Fragment>))}
         </DescriptionText>
         <DescriptionTitle>
           <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
-            攤位報名資訊
+            {t('boothRecruitTitle', '攤位報名資訊')}
           </DescriptionTitleWithImage>
         </DescriptionTitle>
         <DescriptionText>
-          攤位招募時間：2026/01/10 開放線上報名<br/>
-          招募截止時間：2026/01/31 截止報名<br/>
-          攤位數量：<br/>
-          　單人攤位每日____攤<br/>
-          　雙人攤位每日____攤<br/>
-          招募類型：Cosplay、寫真、KOL、動漫周邊、同人誌
+          {t('boothRecruitInfo', '攤位招募時間：2026/01/10 開放線上報名\n招募截止時間：2026/01/31 截止報名\n攤位數量：\n　單人攤位每日____攤\n　雙人攤位每日____攤\n招募類型：Cosplay、寫真、KOL、動漫周邊、同人誌').split('\n').map((line: string, i: number) => (<React.Fragment key={i}>{line}<br/></React.Fragment>))}
         </DescriptionText>
         <DescriptionTitle>
           <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
-            攤位資訊
+            {t('boothInfoTitle', '攤位資訊')}
           </DescriptionTitleWithImage>
         </DescriptionTitle>
       </DescriptionBox>
@@ -345,176 +393,180 @@ const HomePage: React.FC = () => {
       {/* 説明画像1 */}
       <SectionImages>
         <SetumeiImg
-          src={`${process.env.PUBLIC_URL}/adultopia/setumei1.jpg`}
+          src={i18n.language === 'ja' ? `${process.env.PUBLIC_URL}/adultopia/setumei1_ja.jpg` : `${process.env.PUBLIC_URL}/adultopia/setumei1.jpg`}
           alt="説明画像1"
         />
       </SectionImages>
-      
+
       {/* 説明画像2 */}
       <SectionImages>
         <SetumeiImg
-          src={`${process.env.PUBLIC_URL}/adultopia/setumei2.jpg`}
+          src={i18n.language === 'ja' ? `${process.env.PUBLIC_URL}/adultopia/setumei2_ja.jpg` : `${process.env.PUBLIC_URL}/adultopia/setumei2.jpg`}
           alt="説明画像2"
         />
-        
       </SectionImages>
       {/* 説明画像3 */}
       <SectionImages>
         <SetumeiImg
-          src={`${process.env.PUBLIC_URL}/adultopia/setumei3.jpg`}
+          src={i18n.language === 'ja' ? `${process.env.PUBLIC_URL}/adultopia/setumei3_ja.jpg` : `${process.env.PUBLIC_URL}/adultopia/setumei3.jpg`}
           alt="説明画像3"
         />
       </SectionImages>
       {/* 説明画像4 */}
       <SectionImages>
         <SetumeiImg
-          src={`${process.env.PUBLIC_URL}/adultopia/setumei4.jpg`}
+          src={i18n.language === 'ja' ? `${process.env.PUBLIC_URL}/adultopia/setumei4_ja.jpg` : `${process.env.PUBLIC_URL}/adultopia/setumei4.jpg`}
           alt="説明画像4"
         />
       </SectionImages>
       {/* 説明画像5 */}
       <SectionImages>
         <SetumeiImg
-          src={`${process.env.PUBLIC_URL}/adultopia/setumei5.jpg`}
+          src={i18n.language === 'ja' ? `${process.env.PUBLIC_URL}/adultopia/setumei5_ja.jpg` : `${process.env.PUBLIC_URL}/adultopia/setumei5.jpg`}
           alt="説明画像5"
         />
       </SectionImages>
       <DescriptionBox>
         <DescriptionTitle>
           <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
-            報名流程
+            {t('formProcess', '報名流程')}
           </DescriptionTitleWithImage>
         </DescriptionTitle>
       </DescriptionBox>
-      {/* プロセス画像 */}
+      {/* プロセス画像（言語対応） */}
       <SectionImages>
         <SetumeiImg
-          src={`${process.env.PUBLIC_URL}/adultopia/process2.jpg`}
+          src={i18n.language === 'ja' ? `${process.env.PUBLIC_URL}/adultopia/process_ja.jpg` : `${process.env.PUBLIC_URL}/adultopia/process.jpg`}
           alt="プロセス画像"
         />
       </SectionImages>
       <DescriptionBox>
         <DescriptionTitle>
           <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
-            報名簡章
+            {t('entryGuide', '報名簡章')}
           </DescriptionTitleWithImage>
         </DescriptionTitle>
             <DescriptionText as="div">
-              <LinkBlock>
-                 <UnderlinedLink href="https://drive.google.com/file/d/1WasayDe3m4j_40xTY15jcM-Bg2fFvCIy/view?usp=sharing" target="_blank" rel="noopener noreferrer">中文報名簡章</UnderlinedLink>
-              </LinkBlock>
-              <LinkBlock>
-                 <UnderlinedLink href="https://drive.google.com/file/d/1gKienFXdzh1scliEx2OWsX18CvqBXAmw/view?usp=drive_link" target="_blank" rel="noopener noreferrer">日文報名簡章</UnderlinedLink>
-              </LinkBlock>
-              <LinkBlock>
-                 <UnderlinedLink href="https://drive.google.com/file/d/1zaYTqjBmS7A4a3SEUju2woYeKUlt1d9b/view?usp=drive_link" target="_blank" rel="noopener noreferrer">韓文報名簡章</UnderlinedLink>
-              </LinkBlock>
+              {i18n.language === 'zh-TW' && (
+                <LinkBlock>
+                  <UnderlinedLink href="https://drive.google.com/file/d/1WasayDe3m4j_40xTY15jcM-Bg2fFvCIy/view?usp=sharing" target="_blank" rel="noopener noreferrer">{t('entryGuide', '中文報名簡章')}</UnderlinedLink>
+                </LinkBlock>
+              )}
+              {i18n.language === 'ja' && (
+                <LinkBlock>
+                  <UnderlinedLink href="https://drive.google.com/file/d/1gKienFXdzh1scliEx2OWsX18CvqBXAmw/view?usp=drive_link" target="_blank" rel="noopener noreferrer">{t('entryGuide', '日文報名簡章')}</UnderlinedLink>
+                </LinkBlock>
+              )}
+              {i18n.language === 'ko' && (
+                <LinkBlock>
+                  <UnderlinedLink href="https://drive.google.com/file/d/1zaYTqjBmS7A4a3SEUju2woYeKUlt1d9b/view?usp=drive_link" target="_blank" rel="noopener noreferrer">{t('entryGuide', '韓文報名簡章')}</UnderlinedLink>
+                </LinkBlock>
+              )}
             </DescriptionText>
       </DescriptionBox>
       <DescriptionBox>
         <DescriptionTitle>
           <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
-            攤位報名資料填寫
+            {t('boothEntryTitle', '攤位報名資料填寫')}
           </DescriptionTitleWithImage>
         </DescriptionTitle>
       </DescriptionBox>
         {/* 報名フォーム（見た目のみ） */}
         <FormSection>
-          <FormTitle>報名表單</FormTitle>
+          <FormTitle>{t('formTitle', '報名表單')}</FormTitle>
           <StyledForm onSubmit={handleSubmit}>
-            <SectionLabel>基本資料</SectionLabel>
+            <SectionLabel>{t('sectionBasic', '基本資料')}</SectionLabel>
             <FormGroup>
-              <Label htmlFor="realName">真實姓名 <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="text" id="realName" name="realName" placeholder="請輸入真實姓名" value={formData.realName} onChange={handleInputChange} required />
+              <Label htmlFor="realName">{t('realName', '真實姓名')} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="realName" name="realName" placeholder={t('realName', '請輸入真實姓名')} value={formData.realName} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="email">Email <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="email" id="email" name="email" placeholder="請輸入Email" value={formData.email} onChange={handleInputChange} required />
+              <Label htmlFor="email">{t('email', 'Email')} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="email" id="email" name="email" placeholder={t('email', '請輸入Email')} value={formData.email} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="phone">聯絡電話 <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="text" id="phone" name="phone" placeholder="請輸入聯絡電話" value={formData.phone} onChange={handleInputChange} required />
+              <Label htmlFor="phone">{t('phone', '聯絡電話')} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="phone" name="phone" placeholder={t('phone', '請輸入聯絡電話')} value={formData.phone} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="idNumber">身分證字號 / 護照號碼 <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="text" id="idNumber" name="idNumber" placeholder="請輸入身分證字號或護照號碼" value={formData.idNumber} onChange={handleInputChange} required />
+              <Label htmlFor="idNumber">{t('idNumber', '身分證字號 / 護照號碼')} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="idNumber" name="idNumber" placeholder={t('idNumber', '請輸入身分證字號或護照號碼')} value={formData.idNumber} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="facebook">社群連結：Facebook</Label>
-              <Input type="text" id="facebook" name="facebook" placeholder="Facebook連結" value={formData.facebook} onChange={handleInputChange} />
+              <Label htmlFor="facebook">{t('facebook', '社群連結：Facebook')}</Label>
+              <Input type="text" id="facebook" name="facebook" placeholder={t('facebook', 'Facebook連結')} value={formData.facebook} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="instagram">社群連結：Instagram</Label>
-              <Input type="text" id="instagram" name="instagram" placeholder="Instagram連結" value={formData.instagram} onChange={handleInputChange} />
+              <Label htmlFor="instagram">{t('instagram', '社群連結：Instagram')}</Label>
+              <Input type="text" id="instagram" name="instagram" placeholder={t('instagram', 'Instagram連結')} value={formData.instagram} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="twitter">社群連結：X（Twitter）</Label>
-              <Input type="text" id="twitter" name="twitter" placeholder="X（Twitter）連結" value={formData.twitter} onChange={handleInputChange} />
+              <Label htmlFor="twitter">{t('twitter', '社群連結：X（Twitter）')}</Label>
+              <Input type="text" id="twitter" name="twitter" placeholder={t('twitter', 'X（Twitter）連結')} value={formData.twitter} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="otherSocial">社群連結：其他</Label>
-              <Input type="text" id="otherSocial" name="otherSocial" placeholder="其他社群連結" value={formData.otherSocial} onChange={handleInputChange} />
+              <Label htmlFor="otherSocial">{t('otherSocial', '社群連結：其他')}</Label>
+              <Input type="text" id="otherSocial" name="otherSocial" placeholder={t('otherSocial', '其他社群連結')} value={formData.otherSocial} onChange={handleInputChange} />
             </FormGroup>
-            <SectionLabel>報名資料</SectionLabel>
+            <SectionLabel>{t('sectionEntry', '報名資料')}</SectionLabel>
             {/* 攤位類型を先に移動 */}
             <FormGroup>
-              <Label>攤位類型</Label>
+              <Label>{t('boothType', '攤位類型')}</Label>
               <RadioGroup>
                 <RadioLabel>
-                  <RadioInput type="radio" name="boothType" value="standard" checked={formData.boothType === 'standard'} onChange={handleBoothTypeChange} /> 標準攤位
+                  <RadioInput type="radio" name="boothType" value="standard" checked={formData.boothType === 'standard'} onChange={handleBoothTypeChange} /> {t('boothTypeStandard', '標準攤位')}
                 </RadioLabel>
                 <RadioLabel>
-                  <RadioInput type="radio" name="boothType" value="double" checked={formData.boothType === 'double'} onChange={handleBoothTypeChange} /> 雙人攤位
+                  <RadioInput type="radio" name="boothType" value="double" checked={formData.boothType === 'double'} onChange={handleBoothTypeChange} /> {t('boothTypeDouble', '雙人攤位')}
                 </RadioLabel>
               </RadioGroup>
             </FormGroup>
             {/* 創作者姓名フィールド */}
             <FormGroup>
-              <Label>創作者姓名{formData.boothType === 'double' ? '1' : ''} <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="text" name="creatorName1" placeholder="創作者姓名" value={formData.creatorName1} onChange={handleInputChange} required />
+              <Label>{t('creatorName', '創作者姓名')}{formData.boothType === 'double' ? '1' : ''} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" name="creatorName1" placeholder={t('creatorName', '創作者姓名')} value={formData.creatorName1} onChange={handleInputChange} required />
             </FormGroup>
             {formData.boothType === 'double' && (
               <FormGroup>
-                <Label>創作者姓名2 <span style={{color: '#cf0404'}}>*</span></Label>
-                <Input type="text" name="creatorName2" placeholder="創作者姓名" value={formData.creatorName2} onChange={handleInputChange} required />
+                <Label>{t('creatorName2', '創作者姓名2')} <span style={{color: '#cf0404'}}>*</span></Label>
+                <Input type="text" name="creatorName2" placeholder={t('creatorName', '創作者姓名')} value={formData.creatorName2} onChange={handleInputChange} required />
               </FormGroup>
             )}
             
             <FormGroup>
-              <Label htmlFor="boothName">攤位名稱 <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="text" id="boothName" name="boothName" placeholder="攤位名稱" value={formData.boothName} onChange={handleInputChange} required />
+              <Label htmlFor="boothName">{t('boothName', '攤位名稱')} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="boothName" name="boothName" placeholder={t('boothName', '攤位名稱')} value={formData.boothName} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="boothSubtitle">攤位副標</Label>
-              <Input type="text" id="boothSubtitle" name="boothSubtitle" placeholder="攤位副標" value={formData.boothSubtitle} onChange={handleInputChange} />
+              <Label htmlFor="boothSubtitle">{t('boothSubtitle', '攤位副標')}</Label>
+              <Input type="text" id="boothSubtitle" name="boothSubtitle" placeholder={t('boothSubtitle', '攤位副標')} value={formData.boothSubtitle} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="lanternName">燈籠名稱（限六個字以内） <span style={{color: '#cf0404'}}>*</span></Label>
-              <Input type="text" id="lanternName" name="lanternName" placeholder="燈籠名稱（限六個字）" maxLength={6} value={formData.lanternName} onChange={handleInputChange} required />
+              <Label htmlFor="lanternName">{t('lanternName', '燈籠名稱（限六個字以内）')} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="lanternName" name="lanternName" placeholder={t('lanternName', '燈籠名稱（限六個字）')} maxLength={6} value={formData.lanternName} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="lanternSubtitle">燈籠副標</Label>
-              <Input type="text" id="lanternSubtitle" name="lanternSubtitle" placeholder="燈籠副標" value={formData.lanternSubtitle} onChange={handleInputChange} />
+              <Label htmlFor="lanternSubtitle">{t('lanternSubtitle', '燈籠副標')}</Label>
+              <Input type="text" id="lanternSubtitle" name="lanternSubtitle" placeholder={t('lanternSubtitle', '燈籠副標')} value={formData.lanternSubtitle} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="promo1">宣傳素材1（尺寸規格：至少為1080 x 1920） <span style={{color: '#cf0404'}}>*</span></Label>
+              <Label htmlFor="promo1">{t('promo1', '宣傳素材1（尺寸規格：至少為1080 x 1920）')} <span style={{color: '#cf0404'}}>*</span></Label>
               <Input type="file" id="promo1" name="promo1" accept="image/*" onChange={handleInputChange} required ref={promo1Ref} />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="promo2">宣傳素材2（尺寸規格：至少為1080 x 1920） <span style={{color: '#cf0404'}}>*</span></Label>
+              <Label htmlFor="promo2">{t('promo2', '宣傳素材2（尺寸規格：至少為1080 x 1920）')} <span style={{color: '#cf0404'}}>*</span></Label>
               <Input type="file" id="promo2" name="promo2" accept="image/*" onChange={handleInputChange} required ref={promo2Ref} />
             </FormGroup>
-            {/* ...existing code... */}
             <FormGroup>
-              <Label htmlFor="hardware">額外硬體需求（請填寫品項及數量）</Label>
-              <Input type="text" id="hardware" name="hardware" placeholder="例：插座2個、桌子1張" value={formData.hardware} onChange={handleInputChange} />
+              <Label htmlFor="hardware">{t('hardware', '額外硬體需求（請填寫品項及數量）')}</Label>
+              <Input type="text" id="hardware" name="hardware" placeholder={t('hardwarePlaceholder', '例：插座2個、桌子1張')} value={formData.hardware} onChange={handleInputChange} />
             </FormGroup>
             {/* 備註欄 */}
             <FormGroup>
-              <Label htmlFor="remarks">備註：<br/>（若有任何特別需求請告知我們，或寄信給官方信箱，我們會儘速回覆您）</Label>
-              <RemarksTextarea id="remarks" name="remarks" rows={3} placeholder="備註、特別需求" value={formData.remarks} onChange={handleInputChange} />
+              <Label htmlFor="remarks">{t('remarks', '備註：')}<br/>{t('remarksDesc', '（若有任何特別需求請告知我們，或寄信給官方信箱，我們會儘速回覆您）')}</Label>
+              <RemarksTextarea id="remarks" name="remarks" rows={3} placeholder={t('remarksPlaceholder', '備註、特別需求')} value={formData.remarks} onChange={handleInputChange} />
             </FormGroup>
-            <SubmitButton type="submit" disabled={status.submitting || !isFormValid()}>{status.submitting ? '送信中...' : '確認報名'}</SubmitButton>
+            <SubmitButton type="submit" disabled={status.submitting || !isFormValid()}>{status.submitting ? t('submitSending', '送信中...') : t('submitConfirm', '確認報名')}</SubmitButton>
             {status.info.msg && (
               <div style={{ marginTop: '1rem', textAlign: 'center', color: status.info.error ? '#c00' : '#155724', background: status.info.error ? '#f8d7da' : '#d4edda', padding: '0.75rem', borderRadius: 4 }}>
                 {status.info.msg}

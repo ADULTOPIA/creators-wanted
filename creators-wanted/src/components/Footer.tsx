@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 // --- Styled Components ---
@@ -115,6 +116,7 @@ const TextGroup = styled.div`
 // --- Component ---
 
 const Footer = () => {
+  const { t } = useTranslation();
   return (
     <FooterContainer>
       <FooterInner>
@@ -127,15 +129,15 @@ const Footer = () => {
         {/* 右側：情報エリア */}
         <InfoSection>
           <InfoBlock>
-            <Title>大人國｜創作者聯繫</Title>
+            <Title>{t('contactTitle', '大人國｜創作者聯繫')}</Title>
             <TextGroup>
-              <p>創作者聯繫窗口：范范</p>
+              <p>{t('contactWindow', '創作者聯繫窗口：')}范范</p>
               <p>Line ID：xd6563</p>
               <p>biz@platinum-star.com</p>
             </TextGroup>
           </InfoBlock>
           <InfoBlock>
-            <Title>主辦單位</Title>
+            <Title>{t('organizer', '主辦單位')}</Title>
             <TextGroup>
               <p>白金之星音樂娛樂股份有限公司</p>
               <p>白金之星國際娛樂股份有限公司</p>
