@@ -315,7 +315,7 @@ const HomePage: React.FC = () => {
           <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}>
             <div style={{ position: 'relative', display: 'inline-block' }}>
               <button
-                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 4, border: '1px solid #ccc', background: '#fff', cursor: 'pointer', fontWeight: 600 }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 4, border: '1px solid #ccc', background: '#fff', cursor: 'pointer',color: '#222', fontWeight: 600 }}
                 onClick={() => setLangMenuOpen(open => !open)}
                 aria-label="Change language"
               >
@@ -344,6 +344,7 @@ const HomePage: React.FC = () => {
                           width: '100%',
                           padding: '8px 16px',
                           background: i18n.language === lang.code ? '#eee' : '#fff',
+                          color: '#222',
                           border: 'none',
                           textAlign: 'left',
                           cursor: 'pointer',
