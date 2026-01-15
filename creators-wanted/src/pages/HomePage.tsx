@@ -36,8 +36,8 @@ const HeroBadge = styled.div`
 const HeroWrap = styled.section`
   background: #fff;
   padding: 0;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
+  margin-left: 0;
 `;
 
 const HeroCard = styled.div`
@@ -45,20 +45,18 @@ const HeroCard = styled.div`
   border-radius: 0;
   overflow: hidden;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
-  width: 100vw;
+  width: 100%;
 `;
 
 
 const HeroImg = styled.img`
   display: block;
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
   height: auto;
 `;
 const SetumeiImg = styled.img`
   display: block;
-  width: 90vw;
-  max-width: 90vw;
+  width: 90%;
   height: auto;
   margin: 0 auto;
 `;
@@ -594,8 +592,8 @@ const LinkBlock = styled.div`
 const SectionImages = styled.section`
   background: #fff;
   padding: 0;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
+  margin-left: 0;
   margin-bottom: 16px;
   position: relative;
   text-align: center;
