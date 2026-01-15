@@ -132,7 +132,6 @@ const Footer = () => {
             <Title>{t('contactTitle', '大人國｜創作者聯繫')}</Title>
             <TextGroup>
               <p>{t('contactWindow', '創作者聯繫窗口：')}范范</p>
-              <p>Line ID：xd6563</p>
               <p>biz@platinum-star.com</p>
             </TextGroup>
           </InfoBlock>
