@@ -110,7 +110,8 @@ const HomePage: React.FC = () => {
     promo1: null as File | null,
     promo2: null as File | null,
     hardware: '',
-    remarks: ''
+    remarks: '',
+    entryDays: [] as string[], // 新項目: 参加日
   });
   const isFormValid = () => {
     // 必須項目
@@ -119,6 +120,7 @@ const HomePage: React.FC = () => {
       formData.email,
       formData.phone,
       formData.idNumber,
+        formData.entryDays.length > 0, // 参加日が1つ以上選択されているか
       formData.creatorName1,
       formData.boothName,
       formData.lanternName,
@@ -146,6 +148,17 @@ const HomePage: React.FC = () => {
   // 各inputのonChange汎用ハンドラ
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type, files } = e.target as HTMLInputElement;
+    if (type === 'checkbox' && name === 'entryDays') {
+      const checked = (e.target as HTMLInputElement).checked;
+      const dayValue = value;
+      setFormData(prev => {
+        const newDays = checked
+          ? [...prev.entryDays, dayValue]
+          : prev.entryDays.filter(d => d !== dayValue);
+        return { ...prev, entryDays: newDays };
+      });
+      return;
+      }
     if (type === 'file') {
       setFormData(prev => ({ ...prev, [name]: files && files[0] ? files[0] : null }));
     } else {
@@ -229,6 +242,10 @@ const HomePage: React.FC = () => {
       formEntryData.append('entry.751341583', formData.instagram); // Instagram
       formEntryData.append('entry.612151145', formData.twitter); // X（Twitter）
       formEntryData.append('entry.992573759', formData.otherSocial); // 其他社群
+        // 新項目: 参加日（複数可）
+        formData.entryDays.forEach(day => {
+          formEntryData.append('entry.118036694', day);
+        });
       formEntryData.append('entry.71172756', formData.boothType === 'double' ? '雙人攤位' : '標準攤位'); // 攤位類型（ラジオボタン）
       formEntryData.append('entry.879795608', formData.creatorName1); // 創作者姓名1
       if (formData.boothType === 'double') formEntryData.append('entry.42970170', formData.creatorName2); // 創作者姓名2
@@ -274,7 +291,8 @@ const HomePage: React.FC = () => {
         promo1: null,
         promo2: null,
         hardware: '',
-        remarks: ''
+        remarks: '',
+        entryDays: [],
       });
       // ファイルinputもリセット
       if (promo1Ref.current) promo1Ref.current.value = '';
@@ -508,6 +526,31 @@ const HomePage: React.FC = () => {
               <Input type="text" id="otherSocial" name="otherSocial" placeholder={t('otherSocial', '其他社群連結')} value={formData.otherSocial} onChange={handleInputChange} />
             </FormGroup>
             <SectionLabel>{t('sectionEntry', '報名資料')}</SectionLabel>
+
+              {/* 新項目: 参加日チェックボックス */}
+              <FormGroup>
+                <Label>{t('entryDays', '報名日期')} <span style={{color: '#cf0404'}}>*</span></Label>
+                <div style={{ display: 'flex', gap: '2rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                      type="checkbox"
+                      name="entryDays"
+                      value="3/28"
+                      checked={formData.entryDays.includes('3/28')}
+                      onChange={handleInputChange}
+                    /> 3/28
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                      type="checkbox"
+                      name="entryDays"
+                      value="3/29"
+                      checked={formData.entryDays.includes('3/29')}
+                      onChange={handleInputChange}
+                    /> 3/29
+                  </label>
+                </div>
+              </FormGroup>
             {/* 攤位類型を先に移動 */}
             <FormGroup>
               <Label>{t('boothType', '攤位類型')}</Label>

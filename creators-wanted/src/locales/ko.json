@@ -16,6 +16,7 @@
   "sectionBasic": "기본 정보",
   "sectionEntry": "신청 정보",
   "boothType": "부스 타입",
+  "entryDays": "신청 날짜",
   "boothTypeStandard": "싱글 부스",
   "boothTypeDouble": "더블 부스",
   "creatorName": "크리에이터명",
