@@ -112,6 +112,7 @@ const HomePage: React.FC = () => {
     hardware: '',
     remarks: '',
     entryDays: [] as string[], // 新項目: 参加日
+    recommender: '', // 新項目: 推薦人
   });
   const isFormValid = () => {
     // 必須項目
@@ -259,6 +260,9 @@ const HomePage: React.FC = () => {
       formEntryData.append('entry.1340388620', formData.hardware); // 額外硬體需求
       formEntryData.append('entry.1539071706', formData.remarks); // 備註
 
+      // 新項目: 推薦人
+      formEntryData.append('entry.1506048127', formData.recommender);
+
       // fetch APIで送信
       await fetch(googleFormURL, {
         method: 'POST',
@@ -293,6 +297,7 @@ const HomePage: React.FC = () => {
         hardware: '',
         remarks: '',
         entryDays: [],
+        recommender: '',
       });
       // ファイルinputもリセット
       if (promo1Ref.current) promo1Ref.current.value = '';
@@ -598,6 +603,11 @@ const HomePage: React.FC = () => {
             <FormGroup>
               <Label htmlFor="promo2">{t('promo2', '宣傳素材2（尺寸規格：至少為1080 x 1920）')} <span style={{color: '#cf0404'}}>*</span></Label>
               <Input type="file" id="promo2" name="promo2" accept="image/*" onChange={handleInputChange} required ref={promo2Ref} />
+            </FormGroup>
+            {/* 新項目: 推薦人（短文） */}
+            <FormGroup>
+              <Label htmlFor="recommender">{t('recommender', '推薦人')}</Label>
+              <Input type="text" id="recommender" name="recommender" placeholder={t('recommender', '推薦人')} value={formData.recommender} onChange={handleInputChange} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="hardware">{t('hardware', '額外硬體需求（請填寫品項及數量）')}</Label>
