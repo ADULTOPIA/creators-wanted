@@ -105,6 +105,7 @@ const HomePage: React.FC = () => {
     creatorName2: '',
     boothName: '',
     boothSubtitle: '',
+    boothContent: '', // 新項目: 販售內容
     lanternName: '',
     lanternSubtitle: '',
     promo1: null as File | null,
@@ -121,13 +122,14 @@ const HomePage: React.FC = () => {
       formData.email,
       formData.phone,
       formData.idNumber,
-        formData.entryDays.length > 0, // 参加日が1つ以上選択されているか
+      formData.entryDays.length > 0, // 参加日が1つ以上選択されているか
       formData.creatorName1,
       formData.boothName,
       formData.lanternName,
       formData.promo1,
       formData.promo2,
       formData.boothType,
+      formData.boothContent // boothContentを必須項目に追加
     ];
     // boothTypeがdoubleならcreatorName2も必須
     if (formData.boothType === 'double' && !formData.creatorName2) return false;
@@ -141,7 +143,6 @@ const HomePage: React.FC = () => {
     const value = e.target.value;
     setFormData(prev => ({
       ...prev,
-      boothType: value,
       // boothTypeがstandardなら2人目を空に
       creatorName2: value === 'double' ? prev.creatorName2 : ''
     }));
@@ -252,6 +253,7 @@ const HomePage: React.FC = () => {
       if (formData.boothType === 'double') formEntryData.append('entry.42970170', formData.creatorName2); // 創作者姓名2
       formEntryData.append('entry.342299385', formData.boothName); // 攤位名稱
       formEntryData.append('entry.251903871', formData.boothSubtitle); // 攤位副標
+      formEntryData.append('entry.110844998', formData.boothContent); // 販售內容
       formEntryData.append('entry.975159553', formData.lanternName); // 燈籠名稱
       formEntryData.append('entry.854719392', formData.lanternSubtitle); // 燈籠副標
       // 宣傳素材はGASでアップロード済みなので「創作者姓名_宣傳素材1」「創作者姓名_宣傳素材2」の形式で入れる
@@ -290,6 +292,7 @@ const HomePage: React.FC = () => {
         creatorName2: '',
         boothName: '',
         boothSubtitle: '',
+        boothContent: '',
         lanternName: '',
         lanternSubtitle: '',
         promo1: null,
@@ -587,6 +590,11 @@ const HomePage: React.FC = () => {
             <FormGroup>
               <Label htmlFor="boothSubtitle">{t('boothSubtitle', '攤位副標')}</Label>
               <Input type="text" id="boothSubtitle" name="boothSubtitle" placeholder={t('boothSubtitle', '攤位副標')} value={formData.boothSubtitle} onChange={handleInputChange} />
+            </FormGroup>
+            {/* 販售內容 */}
+            <FormGroup>
+              <Label htmlFor="boothContent">{t('boothContent', '販售內容')} <span style={{color: '#cf0404'}}>*</span></Label>
+              <Input type="text" id="boothContent" name="boothContent" placeholder={t('boothContent', '販售內容')} value={formData.boothContent} onChange={handleInputChange} required />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="lanternName">{t('lanternName', '燈籠名稱（限六個字以内）')} <span style={{color: '#cf0404'}}>*</span></Label>

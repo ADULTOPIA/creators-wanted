@@ -31,6 +31,7 @@
   "entryDays": "参加日",
   "boothName": "ブース名",
   "boothSubtitle": "ブースサブタイトル",
+  "boothContent": "販売内容",
   "lanternName": "提灯名（6文字以内）",
   "lanternSubtitle": "提灯サブタイトル",
   "promo1": "宣伝素材1（サイズ：1080 x 1920以上）",
