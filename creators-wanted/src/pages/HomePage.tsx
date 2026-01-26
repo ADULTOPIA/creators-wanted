@@ -143,6 +143,7 @@ const HomePage: React.FC = () => {
     const value = e.target.value;
     setFormData(prev => ({
       ...prev,
+      boothType: value,
       // boothTypeがstandardなら2人目を空に
       creatorName2: value === 'double' ? prev.creatorName2 : ''
     }));
