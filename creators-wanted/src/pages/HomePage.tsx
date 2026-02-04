@@ -407,7 +407,7 @@ const HomePage: React.FC = () => {
           </DescriptionTitleWithImage>
         </DescriptionTitle>
         <DescriptionText>
-          {t('boothRecruitInfo', '攤位招募時間：2026/01/10 開放線上報名\n招募截止時間：2026/01/31 截止報名\n攤位數量：\n　單人攤位每日____攤\n　雙人攤位每日____攤\n招募類型：Cosplay、寫真、KOL、動漫周邊、同人誌').split('\n').map((line: string, i: number) => (<React.Fragment key={i}>{line}<br/></React.Fragment>))}
+          {t('boothRecruitInfo', '攤位招募時間：2026/01/10 開放線上報名\n攤位數量：\n招募類型：Cosplay、寫真、KOL、動漫周邊、同人誌').split('\n').map((line: string, i: number) => (<React.Fragment key={i}>{line}<br/></React.Fragment>))}
         </DescriptionText>
         <DescriptionTitle>
           <DescriptionTitleWithImage imgSrc={process.env.PUBLIC_URL + '/adultopia/logoHeart.png'} imgAlt="ロゴ">
